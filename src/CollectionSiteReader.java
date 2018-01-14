@@ -29,7 +29,6 @@ public class CollectionSiteReader {
 				String[] attributes = line.split(",");
 				CollectionSiteData d = createData(attributes);
 				data.add(d);
-				line = br.readLine();
 			}
 		} catch(IOException ioe) {
 			ioe.printStackTrace();
