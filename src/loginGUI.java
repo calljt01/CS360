@@ -22,12 +22,17 @@ public class loginGUI extends JFrame{
 	private JLabel lblError;
 	private JPasswordField txtPassword;
 	
+	public static void main(String[] args){
+		loginGUI window = new loginGUI();
+	}
+	
 	public loginGUI(){
 		
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		setBounds(200, 300, 300, 175);
+		setResizable(false);
 		
 		JPanel userNamePanel = new JPanel();
 		getContentPane().add(userNamePanel);
@@ -71,7 +76,7 @@ public class loginGUI extends JFrame{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (txtUsername.getText().equals("siteadmin") && txtPassword.getPassword().equals("sitepwd123")){
+			if (txtUsername.getText().equals("siteadmin") && txtPassword.getText().equals("sitepwd123")){
 				GUI gui = new GUI();
 				dispose();
 			} else {

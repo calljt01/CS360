@@ -10,16 +10,19 @@ public class ListViewGUI extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JTextArea txtArea;
+	private CollectionSiteList CSL;
 
 	
 	public ListViewGUI(CollectionSiteList CSL){
+		this.CSL = CSL;
+		
 		setTitle("List View");
-		setVisible(true);
 		setBounds(200, 200, 400, 400);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		getContentPane().setLayout(new GridLayout(1, 0, 0, 0));
 		
-		JTextArea txtArea = new JTextArea();
+		txtArea = new JTextArea();
 		txtArea.setEditable(false);
 		
 		JScrollPane scrollPane = new JScrollPane(txtArea);
@@ -31,6 +34,11 @@ public class ListViewGUI extends JFrame{
 		CSL.sort();
 		txtArea.setText(CSL.toString());
 		
+	}
+	
+	public void repaint(){
+		CSL.sort();
+		txtArea.setText(CSL.toString());
 	}
 	
 }

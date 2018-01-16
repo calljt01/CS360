@@ -2,6 +2,7 @@ import javax.swing.JFrame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -14,9 +15,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+/*
+ * Creates a manages the CollectionSite Editing GUI
+ */
 public class GUI extends JFrame{
 
-	/**
+	/*
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -35,15 +39,11 @@ public class GUI extends JFrame{
 	private JMenuItem mntmView;
 	private JMenuItem mntmExit;
 	private CollectionSiteList CSL = new CollectionSiteList();
-
-
-	public static void main(String[] args){
-		loginGUI window = new loginGUI();
-	}
-	
+	ListViewGUI LVG;
 	
 	public GUI(){
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		LVG = new ListViewGUI(CSL);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Collection Site Manager");
 		setBounds(200, 300, 400, 400);
 		getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -198,38 +198,63 @@ public class GUI extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			if (e.getActionCommand().equals("Add")){
 				boolean test = true;
-				if (Integer.parseInt(txtSiteNumber.getText()) < 0 || Integer.parseInt(txtSiteNumber.getText()) > 999){
-					txtSiteNumber.setText("Out of range.");
-					test = false;
-				} else {
-					if (CSL.exists(Integer.parseInt(txtSiteNumber.getText()))){
-						txtSiteNumber.setText("Already exists.");
+				if (txtSiteNumber.getText().matches("[0-9]+") && txtSiteNumber.getText().length() > 0) {
+					if (Integer.parseInt(txtSiteNumber.getText()) < 0 || Integer.parseInt(txtSiteNumber.getText()) > 999){
+						txtSiteNumber.setText("Out of range.");
 						test = false;
-					} 
+					} else {
+						if (CSL.exists(Integer.parseInt(txtSiteNumber.getText()))){
+							txtSiteNumber.setText("Already exists.");
+							test = false;
+						} 
+					}
+				} else {
+					txtSiteNumber.setText("Enter a number.");
+					test = false;
 				}
 				
 				if (txtName.getText().length() > 25){
 					txtName.setText("Name too long.");
 					test = false;
 				} else {
-					if (CSL.exists(txtName.getText())){
-						txtName.setText("Already exists.");
+					if (txtName.getText().length() == 0){
+						txtName.setText("Enter a name.");
 						test = false;
+					} else {
+						if (CSL.exists(txtName.getText())){
+							txtName.setText("Already exists.");
+							test = false;
+						}
 					}
 				}
 				
 				if (txtLocation.getText().length() > 25){
 					txtLocation.setText("Location too long.");
 					test = false;
+				} else {
+					if (txtLocation.getText().length() == 0){
+						txtLocation.setText("Enter Location.");
+						test = false;
+					}
 				}
 				
-				if (Integer.parseInt(txtLatitude.getText()) < -90 || Integer.parseInt(txtLatitude.getText()) > 90){
-					txtLatitude.setText("Out of Range.");
+				if (txtSiteNumber.getText().matches("[0-9]+") && txtLatitude.getText().length() > 0){
+					if (Integer.parseInt(txtLatitude.getText()) < -90 || Integer.parseInt(txtLatitude.getText()) > 90){
+						txtLatitude.setText("Out of Range.");
+						test = false;
+					}
+				} else {
+					txtLatitude.setText("Enter a number.");
 					test = false;
 				}
 				
-				if (Integer.parseInt(txtLongitude.getText()) < -180 || Integer.parseInt(txtLongitude.getText()) > 180){
-					txtLongitude.setText("Out of Range.");
+				if (txtSiteNumber.getText().matches("[0-9]+") && txtLongitude.getText().length() > 0){
+					if (Integer.parseInt(txtLongitude.getText()) < -180 || Integer.parseInt(txtLongitude.getText()) > 180){
+						txtLongitude.setText("Out of Range.");
+						test = false;
+					}
+				} else {
+					txtLongitude.setText("Enter a number.");
 					test = false;
 				}
 				
@@ -242,9 +267,9 @@ public class GUI extends JFrame{
 								Double.parseDouble(txtLatitude.getText()), 
 								Double.parseDouble(txtLongitude.getText())));
 					} else {
-						String month =  (String) cmboMonth.getSelectedItem();
-						String day =  (String) cmboDay.getSelectedItem();
-						String year = (String) cmboYear.getSelectedItem();
+						String month =  String.valueOf(cmboMonth.getSelectedItem());
+						String day =  String.valueOf(cmboDay.getSelectedItem());
+						String year = String.valueOf(cmboYear.getSelectedItem());
 						
 						Date date = new Date(month, day, year);
 						CSL.add(new CollectionSite(
@@ -256,7 +281,10 @@ public class GUI extends JFrame{
 								date.getDate()));
 					}
 					
-					txtSiteNumber.setText("");
+					LVG.revalidate();
+					LVG.repaint();
+					
+					txtSiteNumber.setText("Added.");
 					txtName.setText("");
 					txtLocation.setText("");
 					txtLatitude.setText("");
@@ -266,8 +294,32 @@ public class GUI extends JFrame{
 					cmboYear.setSelectedIndex(-1);
 				}
 				
-				
 			} else if (e.getActionCommand().equals("Remove")){
+				txtName.setText("");
+				txtLocation.setText("");
+				txtLatitude.setText("");
+				txtLongitude.setText("");
+				cmboDay.setSelectedIndex(-1);
+				cmboMonth.setSelectedIndex(-1);
+				cmboYear.setSelectedIndex(-1);
+				
+				if (txtSiteNumber.getText().matches("[0-9]+") && txtSiteNumber.getText().length() > 0) {
+					if (Integer.parseInt(txtSiteNumber.getText()) < 0 || Integer.parseInt(txtSiteNumber.getText()) > 999){
+						txtSiteNumber.setText("Out of range.");
+					} else {
+						if (CSL.exists(Integer.parseInt(txtSiteNumber.getText()))){
+							CSL.remove(CSL.get(Integer.parseInt(txtSiteNumber.getText())));
+							txtSiteNumber.setText("Removed.");
+						} else {
+							txtSiteNumber.setText("Does not exist.");
+						}
+					}
+				} else {
+					txtSiteNumber.setText("Enter a number.");
+				}
+				
+				LVG.revalidate();
+				LVG.repaint();
 				
 			} else if (e.getActionCommand().equals("Edit")){
 				
@@ -276,10 +328,12 @@ public class GUI extends JFrame{
 				FC.showOpenDialog(null);
 				CollectionSiteReader CSR = new CollectionSiteReader();
 				CSL = CSR.readDataFromCSV(FC.getName(FC.getSelectedFile()));
+				LVG.dispose();
+				LVG = new ListViewGUI(CSL);
 			} else if (e.getActionCommand().equals("View")){
-				ListViewGUI LVG = new ListViewGUI(CSL);
+				LVG.setVisible(true);
 			} else if (e.getActionCommand().equals("Exit")){
-				dispose();
+				System.exit(0);
 			}
 			
 		}

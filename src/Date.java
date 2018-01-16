@@ -1,14 +1,12 @@
 
+	/*
+	 * A simple date object that creates a string format of a date
+	 */
 public class Date {
-	private String month;
-	private String day;
-	private String year;
+
 	private String date;
 	
 	public Date(String month, String day, String year){
-		this.month = month;
-		this.day = day;
-		this.year = year;
 		date = month + "/" + day + "/" + year;
 	}
 	
